@@ -42,10 +42,15 @@ float maxTemp = 30.0; // switch on led when temp > maxTemp
 int maxTempSensor = (int) ((maxTemp / 100 + .5) * 204.8);
 float temperature = 0.0;
 
+int maxGasSensor = 100;
+float gas = 0.0;
+
 int maxSeconds = 10; // send status message every maxSeconds
 
-const int ledPin = 13;   // temperature led
-const int tempPin = A0;  // T36 temperature sensor analog input pin
+const int tempLedPin = 13;    // temperature led
+const int tempPin = A0;   // T36 temperature sensor analog input pin
+const int gasLedPin = 12; // gas warning led  
+const int gasPin = A1;    // gas analog input
 
 const int led1Pin = 3; // Yellow
 const int led2Pin = 4; // Green
@@ -57,8 +62,10 @@ const int role3Pin = 10;  // Role 3
 const int role4Pin = 11; // Role 4
 
 volatile int tempVal;
+volatile int gasVal;
 volatile int seconds = 0;
 volatile boolean tempHigh = false;
+volatile boolean gasHigh = false;
 volatile boolean statusReport = false;
 
 String inputString = "";
@@ -78,8 +85,11 @@ void setup(){
   command.reserve(50);
   value.reserve(50);
   
-  pinMode(ledPin, OUTPUT); 
-  digitalWrite(ledPin, LOW);
+  pinMode(tempLedPin, OUTPUT); 
+  digitalWrite(tempLedPin, LOW);
+
+  pinMode(gasLedPin, OUTPUT);
+  digitalWrite(gasLedPin, LOW);
   
   pinMode(led1Pin, OUTPUT); 
   pinMode(led2Pin, OUTPUT); 
@@ -124,13 +134,22 @@ for detailed information see: http://www.instructables.com/id/Arduino-Timer-Inte
 ISR(TIMER1_COMPA_vect)
 {
   tempVal = analogRead(tempPin);
+  gasVal = analogRead(gasPin);
+
+  if (gasVal > maxGasSensor) {
+  	digitalWrite(gasLedPin, HIGH);
+  	gasHigh = true;
+  }else {
+  	digitalWrite(gasLedPin, LOW);
+  	gasHigh = false;
+  }
   
   if (tempVal > maxTempSensor) {
-    digitalWrite(ledPin, HIGH);
+    digitalWrite(tempLedPin, HIGH);
     tempHigh = true;
   }
   else {
-    digitalWrite(ledPin, LOW);
+    digitalWrite(tempLedPin, LOW);
     tempHigh = false;
   }
 
@@ -223,6 +242,10 @@ void loop(){
         Serial.println(temperature);
         Serial.print("STATUS THIGH=");
         Serial.println(tempHigh);
+        Serial.print("STATUS GAS=");
+        Serial.println(gasVal);
+        Serial.print("STATUS GASHIGH=");
+        Serial.println(gasHigh);
         stringOK = true;
       } // inputString.startsWith("STATUS")
     } // inputString.startsWith("CMD ")
@@ -238,6 +261,10 @@ void loop(){
     Serial.println(temperature);
     Serial.print("STATUS THIGH=");
     Serial.println(tempHigh);
+    Serial.print("STATUS GAS=");
+    Serial.println(gasVal);
+    Serial.print("STATUS GASHIGH=");
+    Serial.println(gasHigh);
     statusReport = false;
   }
 
