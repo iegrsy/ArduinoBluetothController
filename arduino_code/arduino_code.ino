@@ -51,10 +51,10 @@ const int led1Pin = 3; // Yellow
 const int led2Pin = 4; // Green
 const int led3Pin = 5; // Red
 
-const int role1Pin = 7;  // Role 1
-const int role2Pin = 8;  // Role 2
-const int role3Pin = 9;  // Role 3
-const int role4Pin = 10; // Role 4
+const int role1Pin = 8;  // Role 1
+const int role2Pin = 9;  // Role 2
+const int role3Pin = 10;  // Role 3
+const int role4Pin = 11; // Role 4
 
 volatile int tempVal;
 volatile int seconds = 0;
