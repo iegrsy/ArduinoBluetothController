@@ -42,8 +42,7 @@ float maxTemp = 30.0; // switch on led when temp > maxTemp
 int maxTempSensor = (int) ((maxTemp / 100 + .5) * 204.8);
 float temperature = 0.0;
 
-int maxGasSensor = 100;
-float gas = 0.0;
+int maxGasSensor = 500;
 
 int maxSeconds = 10; // send status message every maxSeconds
 
